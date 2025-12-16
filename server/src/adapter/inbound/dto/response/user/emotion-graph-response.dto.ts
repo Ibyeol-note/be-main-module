@@ -21,14 +21,12 @@ export class EmotionGraphResponseDto {
     @ApiProperty({ description: '기간 내 최저 점수' })
     minScore!: number;
 
-    @ApiPropertyOptional({ description: '가장 좋았던 날' })
+    @ApiProperty({ description: '가장 좋았던 날', required: false })
     bestDay?: string;
 
-    @ApiPropertyOptional({ description: '가장 힘들었던 날' })
+    @ApiProperty({ description: '가장 힘들었던 날', required: false })
     worstDay?: string;
 
     @ApiProperty({ description: '이전 기간 대비 변화' })
     changeFromPrevious!: number;
 }
-
-import { ApiPropertyOptional } from '@nestjs/swagger';
