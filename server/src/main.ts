@@ -1,11 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from './app.module';
+import { setSwagger } from './config/swagger.config';
+import { GLOBAL_PREFIX } from './constants';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Global Prefix
+  app.setGlobalPrefix(GLOBAL_PREFIX);
 
   // Validation Pipe
   app.useGlobalPipes(
@@ -17,18 +22,11 @@ async function bootstrap() {
   );
 
   // Swagger
-  const config = new DocumentBuilder()
-    .setTitle('BE Main Module API')
-    .setDescription('Backend Main Module API Documentation')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  setSwagger(app);
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
-  console.log(`Swagger docs: http://localhost:${port}/api-docs`);
+  console.log(`Swagger docs: http://localhost:${port}/${GLOBAL_PREFIX}/swagger`);
 }
 bootstrap();
