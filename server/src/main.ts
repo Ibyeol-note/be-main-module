@@ -9,6 +9,14 @@ import { GLOBAL_PREFIX } from './constants';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // CORS 설정 (모든 Origin 허용)
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    allowedHeaders: '*',
+  });
+
   // Global Prefix
   app.setGlobalPrefix(GLOBAL_PREFIX);
 
@@ -27,6 +35,6 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
-  console.log(`Swagger docs: http://localhost:${port}/${GLOBAL_PREFIX}/swagger`);
+  console.log(`Swagger: http://localhost:${port}/${GLOBAL_PREFIX}/swagger`);
 }
 bootstrap();
