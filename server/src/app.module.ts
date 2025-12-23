@@ -30,6 +30,11 @@ import { AppService } from './app.service';
         entitiesTs: ['src/**/*.entity.ts'],
         debug: process.env.NODE_ENV !== 'production',
         allowGlobalContext: true,
+        driverOptions: {
+          connection: {
+            ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+          },
+        },
       }),
     }),
     AuthModule,
