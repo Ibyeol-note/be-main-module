@@ -9,6 +9,7 @@ export class AppService {
     status: string;
     timestamp: string;
     database: string;
+    error?: string;
   }> {
     try {
       // DB 연결 확인: 간단한 쿼리 실행
@@ -20,10 +21,12 @@ export class AppService {
         database: 'connected',
       };
     } catch (error) {
+      console.error('Health check DB error:', error);
       return {
         status: 'error',
         timestamp: new Date().toISOString(),
         database: 'disconnected',
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
