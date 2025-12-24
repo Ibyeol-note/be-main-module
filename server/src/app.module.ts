@@ -30,6 +30,13 @@ import { AppService } from './app.service';
         entitiesTs: ['src/**/*.entity.ts'],
         debug: process.env.NODE_ENV !== 'production',
         allowGlobalContext: true,
+        ensureDatabase: true,
+        schemaGenerator: {
+          disableForeignKeys: false,
+          createForeignKeyConstraints: true,
+          ignoreSchema: [],
+          updateSchema: true,
+        },
         driverOptions: {
           connection: {
             ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
