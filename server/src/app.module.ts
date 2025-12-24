@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { MikroORM } from '@mikro-orm/core';
 import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 import * as path from 'path';
 
@@ -54,4 +55,18 @@ import { AppService } from './app.service';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule implements OnModuleInit {
+  constructor(private readonly orm: MikroORM) {}
+
+  async onModuleInit() {
+    const generator = this.orm.schema;
+
+    // 데이터베이스 존재 확인 및 생성
+    await generator.ensureDatabase();
+
+    // 스키마 자동 동기화 (TypeORM의 synchronize: true와 동일)
+    await generator.updateSchema();
+
+    console.log('✅ Database schema synchronized successfully');
+  }
+}
