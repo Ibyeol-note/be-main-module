@@ -141,8 +141,9 @@ jobs:
           source .env.production
           set +a
 
-          # 앱 재시작 (없으면 시작)
-          pm2 restart ibyeol-note --update-env || pm2 start dist/main.js --name ibyeol-note -i 1
+          # 기존 프로세스 삭제 후 재시작 (환경 변수 확실히 로드)
+          pm2 delete ibyeol-note 2>/dev/null || true
+          pm2 start dist/main.js --name ibyeol-note -i 1
           pm2 save
 
           # 부팅 시 자동 시작 설정 (처음 한 번만 필요)
