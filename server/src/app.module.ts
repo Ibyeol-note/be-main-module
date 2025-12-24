@@ -27,7 +27,7 @@ import { AppService } from './app.service';
         user: configService.get('DB_USER', 'postgres'),
         password: configService.get('DB_PASSWORD', 'postgres'),
         dbName: configService.get('DB_NAME', 'be_main_module'),
-        entities: [path.join(__dirname, 'domain', 'entity', '*.entity.js')],
+        entities: [path.join(__dirname, 'domain', 'entity') + '/*.entity.js'],
         entitiesTs: process.env.NODE_ENV === 'development' ? ['src/**/*.entity.ts'] : [],
         debug: true,
         allowGlobalContext: true,
