@@ -26,19 +26,22 @@ export class EmotionAnalysisService {
         const accessKeyId = this.configService.get('AWS_ACCESS_KEY_ID');
         const secretAccessKey = this.configService.get('AWS_SECRET_ACCESS_KEY');
 
-        // AWS 자격 증명이 있는 경우에만 BedrockClient 초기화
+        // BedrockClient 설정
+        const clientConfig: any = { region };
+
+        // 환경 변수에 명시적 자격 증명이 있으면 사용 (로컬 개발용)
         if (accessKeyId && secretAccessKey) {
-            this.bedrockClient = new BedrockRuntimeClient({
-                region,
-                credentials: {
-                    accessKeyId,
-                    secretAccessKey,
-                },
-            });
-            this.logger.log('✅ AWS Bedrock Client 초기화 완료');
+            clientConfig.credentials = {
+                accessKeyId,
+                secretAccessKey,
+            };
+            this.logger.log('✅ AWS Bedrock Client 초기화 완료 (환경 변수 자격 증명)');
         } else {
-            this.logger.warn('⚠️  AWS 자격 증명이 없습니다. Mock 분석만 사용됩니다.');
+            // IAM 역할 사용 (EC2에서 자동으로 자격 증명 제공)
+            this.logger.log('✅ AWS Bedrock Client 초기화 완료 (IAM 역할 사용)');
         }
+
+        this.bedrockClient = new BedrockRuntimeClient(clientConfig);
 
         this.modelId = this.configService.get(
             'BEDROCK_MODEL_ID',
