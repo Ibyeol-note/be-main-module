@@ -43,4 +43,11 @@ export class AuthController {
         // JWT는 서버에서 무효화할 수 없으므로 클라이언트에서 토큰 삭제 처리
         return { message: '로그아웃 되었습니다.' };
     }
+
+    @Post('test-login')
+    @ApiOperation({ summary: '테스트 로그인 (개발용)', description: '인증 없이 테스트 사용자로 로그인하여 JWT 토큰을 발급받습니다.' })
+    @ApiResponse({ status: 200, description: '로그인 성공', type: AuthResponseDto })
+    async testLogin(): Promise<AuthResponseDto> {
+        return this.authService.testLogin();
+    }
 }

@@ -5,4 +5,5 @@ import { AuthResponseDto } from '@/adapter/inbound/dto/response/auth/auth-respon
 export abstract class AuthServiceInPort {
     abstract socialLogin(dto: SocialLoginDto): Promise<AuthResponseDto>;
     abstract signup(userId: number, dto: SignupDto): Promise<AuthResponseDto>;
+    abstract testLogin(): Promise<AuthResponseDto>;
 }

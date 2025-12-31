@@ -64,6 +64,39 @@ export class AuthService implements AuthServiceInPort {
         };
     }
 
+    async testLogin(): Promise<AuthResponseDto> {
+        // 테스트 사용자 찾기 또는 생성
+        const testEmail = 'test@ibyeolnote.com';
+        const testSocialId = 'test-user-123';
+
+        let user = await this.authRepository.findBySocialId(SocialProvider.GOOGLE, testSocialId);
+
+        if (!user) {
+            // 테스트 사용자 생성
+            user = await this.authRepository.createUser({
+                email: testEmail,
+                socialProvider: SocialProvider.GOOGLE,
+                socialId: testSocialId,
+            });
+
+            // 온보딩 완료 처리
+            user = await this.authRepository.updateOnboarding(
+                user.id,
+                '테스트사용자',
+                'NEUTRAL' as any,
+            );
+        }
+
+        // JWT 토큰 생성
+        const accessToken = this.generateToken(user.id, user.email, user.isOnboarded);
+
+        return {
+            accessToken,
+            isOnboarded: user.isOnboarded,
+            userId: user.id,
+        };
+    }
+
     private async getSocialUserInfo(provider: SocialProvider, accessToken: string): Promise<SocialUserInfo> {
         try {
             switch (provider) {
